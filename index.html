@@ -1,1 +1,168 @@
-Hello World
+<html>
+	<head>
+		<title>triangle corners</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<style type="text/css">
+* {
+	margin: 0;
+	padding: 0;
+}
+#sortable {
+    position: relative;
+    border: 1px solid gray;
+}
+ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+li {
+    height: 30px;
+    border: 1px solid #999;
+    background: #eee;
+    cursor: move;
+    width: 200px;
+}
+		</style>
+	</head>
+	<body>
+		<ul id="sortable">
+        	<li>one</li>
+        	<li>two</li>
+        	<li>three</li>
+        	<li>four</li>
+        	<li>five</li>
+    	</ul>
+
+		<script type="text/javascript">
+			
+			onload = function() {
+
+	// create placeholder
+	var placeholder =document.createElement("li");
+	placeholder.className = 'holder';
+	placeholder.style.backgroundColor = 'green'
+
+	var top;
+	var ifDrag;
+	
+	initBindEle();
+
+	function initBindEle () {
+		var sortableLi = document.querySelectorAll('li');
+		
+		var sortable = document.getElementById('sortable');
+
+		for (var i=0; i<sortableLi.length; i++) {
+			initSortable(i)		
+		}
+
+		function initSortable (i) {
+			   
+	    	var startX = 0 , startY = 0, x = 0, y = i*30;
+			sortableLi[i].onmousedown = function (event){
+				var event = event || window.event;
+		    	event.preventDefault();
+			    startX = event.screenX - x;
+			    startY = event.screenY - y;
+
+			    ifDrag = true;
+
+		        document.onmousemove = function (event){
+		            var event = event || window.event;
+
+		            ifDrag = false;
+
+		            var next = document.getElementsByTagName('li')[i+1];
+		            // console.log(next)
+		        	sortable.insertBefore(placeholder, next);
+
+		            // sortableLi[i].setAttribute('dragging', 'true');
+
+				    y = event.screenY - startY;
+				    x = event.screenX - startX;
+				    sortableLi[i].style.position = 'absolute';
+				    sortableLi[i].style['z-index'] = 100;
+				    sortableLi[i].style.left = x + 'px';
+			        sortableLi[i].style.top = y + 'px';
+
+			        top = y;
+
+		            insertByTop(top);
+
+		        };
+		        document.onmouseup = function (){
+		        	if (!ifDrag) {
+		        		sortableLi[i].style['z-index'] = 99;
+					    sortableLi[i].style.position = 'static'
+					    sortable.replaceChild(sortableLi[i], placeholder); 
+					    // console.log(element.find('li'))
+
+			            document.onmousemove = null;
+			            document.onmouseup = null;
+
+			            // console.log(element.find('li'))
+
+			            // var mouseUpEleIndex = getEleIndex();
+			            // console.log(mouseUpEleIndex)
+
+						// scope.stFunc(mouseUpEleIndex);
+
+						
+						initBindEle()
+						
+					    
+
+			            
+		        	} 
+		        };
+		    };
+		    sortableLi[i].onclick = function() {
+		    	// console.log('clicked')
+		    	document.onmousemove = null
+		    }
+			    
+		}
+	}
+
+	
+	
+
+	// function getEleIndex() {
+	//  	var lis = element[0].querySelectorAll('li');
+	// 	var indexLis = []
+ //        for (var j = 0; j < lis.length; j++) {
+	// 		indexLis.push(lis[j].getAttribute('index'))
+	// 	}
+	// 	return indexLis
+	// }
+
+	function insertByTop (top) {
+	 	var height = 30;
+		
+		var holderIndex = Math.round(top / height);
+
+		console.log(holderIndex)
+
+		var holder = sortable.querySelector('.holder');
+		sortable.removeChild(holder);
+
+		var lis = sortable.querySelectorAll('li');
+		
+
+
+		if (!lis[holderIndex]) {
+			sortable.appendChild(placeholder);
+		} else {
+			sortable.insertBefore(placeholder, lis[holderIndex]);	
+		}
+
+			
+
+	}
+}
+
+
+		</script>
+	</body>
+</html>
